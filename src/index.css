@@ -1,0 +1,64 @@
+@import "tailwindcss";
+@import "@fontsource-variable/archivo/wdth.css";
+@import "@fontsource-variable/manrope";
+
+@theme {
+  --font-display: "Archivo Variable", "Archivo", system-ui, sans-serif;
+  --font-sans: "Manrope Variable", "Manrope", system-ui, sans-serif;
+  --color-ink: #f3f0ea;
+  --color-noche: #0b0d12;
+  --color-oro: #e7c48c;
+  --color-oro-2: #f5dfb6;
+  --color-libre: #e7c48c;
+  --ease-suave: cubic-bezier(0.22, 0.7, 0.18, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-noche);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    min-height: 100svh;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--color-oro) 45%, transparent);
+  }
+}
+
+@utility font-ancha {
+  font-family: var(--font-display);
+  font-stretch: 125%;
+}
+
+@utility etiqueta {
+  font-family: var(--font-display);
+  font-stretch: 112%;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+@utility vidrio {
+  background: rgba(13, 16, 23, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  backdrop-filter: blur(22px) saturate(140%);
+  box-shadow:
+    0 24px 60px -24px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,20 @@
+{
+ "escalaLuz": 4.0,
+ "grupos": [
+  "Muros",
+  "Piso",
+  "Techo",
+  "Montantes",
+  "Vidrios",
+  "MueblesSocial",
+  "MueblesPrivado",
+  "Plantas"
+ ],
+ "horneados": [
+  "Piso",
+  "Muros",
+  "Techo",
+  "MueblesSocial",
+  "MueblesPrivado"
+ ]
+}
