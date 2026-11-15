@@ -30,9 +30,13 @@ export function Residencia({ activa = true, onSalir }: Props) {
 
   useEffect(() => {
     const r = crearResidencia(canvas.current!, {
-      onProgreso: setProgreso,
+      onProgreso: (v) => {
+        setProgreso(v)
+        torre.setCarga('cargaResidencia', Math.min(0.97, v))
+      },
       onListo: () => {
         setListo(true)
+        torre.setCarga('cargaResidencia', 1)
         torre.setResidenciaLista(true)
       },
       onParada: setParada,

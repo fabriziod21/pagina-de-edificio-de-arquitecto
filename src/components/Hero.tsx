@@ -1,6 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
 import { motion } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { ALTURA_M, TOTAL_DISPONIBLES, TOTAL_NIVELES, TOTAL_RESIDENCIAS } from '@/data/torre'
 import { anclas, SHOT, torre, useTorre } from '@/lib/estado'
 import { LevelCard } from './LevelCard'
@@ -12,9 +12,10 @@ const EASE = [0.22, 0.7, 0.18, 1] as const
 const INICIAL = 18
 
 export function Hero() {
-  // barrido de entrada: la franja sube del nivel 1 al 18
+  const { entrada } = useTorre()
+  // barrido de entrada: la franja sube del nivel 1 al 18 (cuando termina la pantalla de carga)
   useEffect(() => {
-    if (SHOT) return
+    if (SHOT || !entrada) return
     const timers: number[] = []
     timers.push(window.setTimeout(() => torre.mostrar(), 1400))
     for (let n = 2; n <= INICIAL; n++) {
@@ -25,7 +26,7 @@ export function Hero() {
       )
     }
     return () => timers.forEach(clearTimeout)
-  }, [])
+  }, [entrada])
 
   // flechas del teclado (solo en la portada; dentro del departamento las usa el recorrido)
   useEffect(() => {
@@ -90,7 +91,7 @@ export function Hero() {
       {/* render de Cycles + capa interactiva con su mismo recorte */}
       <motion.div
         initial={SHOT ? false : { scale: 1.08, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
+        animate={entrada ? { scale: 1, opacity: 1 } : { scale: 1.08, opacity: 0 }}
         transition={{ duration: 2.4, ease: EASE }}
         className="absolute inset-0"
       >
@@ -114,7 +115,7 @@ export function Hero() {
 
         <motion.div
           initial={SHOT ? false : { scale: 1.08 }}
-          animate={{ scale: 1 }}
+          animate={{ scale: entrada ? 1 : 1.08 }}
           transition={{ duration: 2.4, ease: EASE }}
           className="absolute inset-0"
         >
@@ -134,15 +135,8 @@ export function Hero() {
  */
 function ResidenciaEnTorre() {
   const { modo } = useTorre()
-  // se monta (y carga, en pausa) unos segundos después de abrir la portada,
-  // así al pulsar "Explorar" el vuelo no compite con la carga del 3D
-  const [precargar, setPrecargar] = useState(modo !== 'torre')
-  useEffect(() => {
-    if (precargar) return
-    const t = window.setTimeout(() => setPrecargar(true), 3500)
-    return () => clearTimeout(t)
-  }, [precargar])
-  if (!precargar && modo === 'torre') return null
+  // se monta (y carga, en pausa) desde que se abre la página, debajo de la pantalla de carga:
+  // al pulsar "Explorar" el 3D ya está listo y el vuelo no compite con su descarga
   return (
     <div className="pointer-events-none absolute inset-0 z-20">
       <Residencia activa={modo === 'nivel'} onSalir={() => torre.salir()} />
@@ -215,9 +209,10 @@ function FichaConLinea() {
 /* ----------------------------------------------------------- texto */
 
 function Copy() {
+  const { entrada } = useTorre()
   const item = (d: number) => ({
     initial: SHOT ? false : { opacity: 0, y: 22 },
-    animate: { opacity: 1, y: 0 },
+    animate: entrada ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 },
     transition: { duration: 1.1, delay: d, ease: EASE },
   })
   return (
@@ -264,6 +259,7 @@ function Copy() {
 }
 
 function Cifras() {
+  const { entrada } = useTorre()
   const datos: [string, string, string?][] = [
     [String(TOTAL_NIVELES), 'Niveles'],
     [String(TOTAL_RESIDENCIAS), 'Residencias'],
@@ -273,7 +269,7 @@ function Cifras() {
   return (
     <motion.dl
       initial={SHOT ? false : { opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={entrada ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
       transition={{ duration: 1.1, delay: 1.5, ease: EASE }}
       className="pointer-events-none absolute bottom-8 left-[4vw] z-10 flex text-ink"
     >

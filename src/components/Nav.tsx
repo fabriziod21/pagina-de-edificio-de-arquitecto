@@ -1,14 +1,16 @@
 import { ArrowUpRight, Menu } from 'lucide-react'
 import { motion } from 'motion/react'
+import { useTorre } from '@/lib/estado'
 import { Logo } from './Logo'
 
 const LINKS = ['Residencias', 'Amenidades', 'Ubicación', 'Contacto']
 
 export function Nav() {
+  const { entrada } = useTorre()
   return (
     <motion.header
       initial={new URLSearchParams(location.search).has('shot') ? false : { opacity: 0, y: -12 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={entrada ? { opacity: 1, y: 0 } : { opacity: 0, y: -12 }}
       transition={{ duration: 1, delay: 0.3, ease: [0.22, 0.7, 0.18, 1] }}
       className="absolute inset-x-0 top-0 z-30 px-[4vw] pt-6"
     >

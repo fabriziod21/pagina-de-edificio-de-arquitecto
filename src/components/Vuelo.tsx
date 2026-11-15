@@ -36,15 +36,18 @@ function usarCuadros() {
           if (!vivo) return
           imgs.current[i] = im
           ok[i] = true
-          setListos(ok.filter(Boolean).length)
+          const n = ok.filter(Boolean).length
+          setListos(n)
+          torre.setCarga('cargaVuelo', n / CUADROS)
         })
         .catch(() => {
           if (vivo) window.setTimeout(() => cargar(i, intento + 1), 4000)
         })
     }
+    // desde que se abre la página (debajo de la pantalla de carga)
     const t = window.setTimeout(() => {
       for (let i = 0; i < CUADROS; i++) cargar(i, 0)
-    }, 1200)
+    }, 0)
     return () => {
       vivo = false
       clearTimeout(t)

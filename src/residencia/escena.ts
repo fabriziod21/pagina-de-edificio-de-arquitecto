@@ -174,7 +174,8 @@ export function crearResidencia(canvas: HTMLCanvasElement, op: Opciones = {}): R
                 toneMapped: false,
               })
             } else if (grupo.startsWith('Vidrios')) {
-              m.material = new THREE.MeshBasicMaterial({ color: '#dfe7e6', transparent: true, opacity: 0.06, depthWrite: false })
+              // vidrio con recubrimiento: oscurece y enfría apenas el exterior, como un muro cortina real
+              m.material = new THREE.MeshBasicMaterial({ color: '#27313a', transparent: true, opacity: 0.16, depthWrite: false })
               m.renderOrder = 2
             } else if (grupo.startsWith('Montantes')) {
               m.material = new THREE.MeshBasicMaterial({ color: '#141312' })
@@ -686,7 +687,8 @@ function crearCielo() {
   const m = new THREE.Mesh<THREE.SphereGeometry, THREE.Material>(geo, mat)
   m.renderOrder = -1
   new THREE.TextureLoader().load(
-    BASE + 'vista.webp',
+    // ?vista=nombre carga vista_nombre.webp (para comparar paisajes sin tocar el definitivo)
+    BASE + `vista${(new URLSearchParams(location.search).get('vista') ?? '').replace(/[^a-z0-9]/gi, '').replace(/^(.+)$/, '_$1')}.webp`,
     (t) => {
       t.colorSpace = THREE.SRGBColorSpace
       t.anisotropy = 4

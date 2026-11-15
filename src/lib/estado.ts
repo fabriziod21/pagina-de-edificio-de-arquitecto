@@ -16,10 +16,16 @@ type Estado = {
   modo: Modo
   /** el departamento 3D terminó de cargar (se precarga en la portada) */
   residenciaLista: boolean
+  /** la pantalla de carga terminó: la portada hace su entrada */
+  entrada: boolean
+  /** avance real de la descarga (0..1) de los cuadros del vuelo y del departamento 3D */
+  cargaVuelo: number
+  cargaResidencia: number
 }
 
 const MODO_INICIAL: Modo = typeof location !== 'undefined' && new URLSearchParams(location.search).has('nivel') ? 'nivel' : 'torre'
-let estado: Estado = { activo: SHOT ? 18 : 1, direccion: 1, visible: SHOT, tocado: SHOT, modo: MODO_INICIAL, residenciaLista: false }
+let estado: Estado = { activo: SHOT ? 18 : 1, direccion: 1, visible: SHOT, tocado: SHOT, modo: MODO_INICIAL, residenciaLista: false, entrada: SHOT, cargaVuelo: 0, cargaResidencia: 0 }
+let reveladoEn = 0
 const subs = new Set<() => void>()
 
 function set(p: Partial<Estado>) {
@@ -45,6 +51,8 @@ export const torre = {
   /** vuela a la residencia de muestra (nivel 18) */
   entrar() {
     if (estado.modo !== 'torre') return
+    // con la pantalla de carga encima (y un margen por la inercia del scroll) no se inicia el vuelo
+    if (!estado.entrada || performance.now() - reveladoEn < 900) return
     set({ modo: 'ida', tocado: true })
   },
   salir() {
@@ -53,6 +61,15 @@ export const torre = {
   },
   setModo(modo: Modo) {
     set({ modo })
+  },
+  /** fin de la pantalla de carga */
+  revelar() {
+    if (estado.entrada) return
+    reveladoEn = performance.now()
+    set({ entrada: true })
+  },
+  setCarga(que: 'cargaVuelo' | 'cargaResidencia', v: number) {
+    if (Math.abs(estado[que] - v) > 0.004 || v === 1) set({ [que]: v })
   },
   setResidenciaLista(v: boolean) {
     if (estado.residenciaLista !== v) set({ residenciaLista: v })

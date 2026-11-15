@@ -8,3 +8,6 @@ dist-ssr
 .idea
 .DS_Store
 *.blend1
+
+# vistas 360 alternativas de prueba (?vista=nombre); solo se publica vista.webp
+public/residencia/vista_*.webp
